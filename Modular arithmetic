@@ -1,0 +1,23 @@
+const int mod = (int)1e9 + 7;
+int norm(int x){ if(x < 0) x += mod; if(x >= mod) x -= mod; return x; }
+template<class T> T expo(T a,int b){ T res = 1; for(a %= mod; b; b /= 2, a *= a, a %= mod) if(b % 2) res *= a, res %= mod; return res; }
+struct Mint{
+    int x;   
+    Mint() : x(0) {}
+    Mint(int x) : x(norm(x % mod)) {}
+    
+    int val() const{ return x; }
+    Mint operator-() const{ return Mint(norm(mod - x)); }
+    Mint inv() const{ assert(x != 0); return expo(*this, mod - 2); }
+    Mint &operator*=(const Mint &rhs){ x = (int)x * rhs.x % mod; return *this; }
+    Mint &operator+=(const Mint &rhs){ x = norm(x + rhs.x); return *this; }
+    Mint &operator-=(const Mint &rhs){ x = norm(x - rhs.x); return *this; }
+    Mint &operator/=(const Mint &rhs){ return *this *= rhs.inv(); }
+    Mint &operator%=(const Mint &rhs){ return *this; }
+    friend Mint operator*(const Mint &lhs, const Mint &rhs){ Mint res = lhs; res *= rhs; return res; }
+    friend Mint operator+(const Mint &lhs, const Mint &rhs){ Mint res = lhs; res += rhs; return res; }
+    friend Mint operator-(const Mint &lhs, const Mint &rhs){ Mint res = lhs; res -= rhs; return res; }
+    friend Mint operator/(const Mint &lhs, const Mint &rhs){ Mint res = lhs; res /= rhs; return res; }
+    friend istream &operator>>(istream &is, Mint &a){ int v; is >> v; a = Mint(v); return is; }
+    friend ostream &operator<<(ostream &os, const Mint &a){ return os << a.val(); }
+};
