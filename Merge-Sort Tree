@@ -1,0 +1,55 @@
+struct MergeSort_Tree {
+   int n;
+   vector<vector<int>> t;
+   vector<int> a;
+   MergeSort_Tree(int _n, vector<int> _a) {
+     n = _n;
+     t.resize(5 * n, vector<int>());
+     for(int i = 0; i < _a.size(); i++) {
+      a.push_back(_a[i]);
+     }
+   } 
+   vector<int> merge(vector<int> p, vector<int> q) {
+     vector<int> r;
+     int i = 0, j = 0;
+     while(i < p.size() && j < q.size()) {
+      if(p[i] < q[j]) {
+        r.push_back(p[i++]);
+      } else {
+        r.push_back(q[j++]);
+      }
+     }
+     while(i < p.size()) {
+      r.push_back(p[i++]);
+     }
+     while(j < q.size()) {
+      r.push_back(q[j++]);
+     }
+     return r;
+   }
+   void build(int curr, int l, int r) {
+     if(l == r) {
+      t[curr].push_back(a[l]);
+      return;
+     }
+     int mid = (l + r) / 2;
+     build(2 * curr + 1, l, mid);
+     build(2 * curr + 2, mid + 1, r);
+     t[curr] = merge(t[2 * curr + 1], t[2 * curr + 2]);
+   }
+   int query(int curr, int l, int r, int x, int y, int k) {
+     if(r < x || l > y) {
+      return 0;
+     }
+     if(x <= l && r <= y) {
+      // for smaller use lower_bound and for smaller equal use upper_bound
+      return lower_bound(t[curr].begin(), t[curr].end(), k) - t[curr].begin(); 
+     }
+     int mid = (l + r) / 2;
+     return query(2 * curr + 1, l, mid, x, y, k) + query(2 * curr + 2, mid + 1, r, x, y, k);
+   }
+
+   int query(int l, int r, int k) {
+    return query(0, 0, n - 1, l, r , k);
+   }
+};
