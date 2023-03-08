@@ -1,0 +1,47 @@
+struct Tree {
+    int n;
+    vector<vector<int>> adj;
+    vector<int> dist;
+    Tree(int _n) {
+        n = _n;
+        const int inf = 1e8;
+        dist.resize(n + 1, -inf);
+        adj.resize(n + 1, vector<int>());
+    }
+    void add(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    void predfs(int node, int par, int &one_end, int &max_dist, int h) {
+        if(h > max_dist) {
+          max_dist = h;
+          one_end = node;
+        }
+        for(int u: adj[node]) {
+         if(u != par) {
+            predfs(u, node, one_end, max_dist, h + 1);
+         }
+        }
+    }
+    pair<pair<int,int>, int> diameter() {
+       int max_dist = 0;
+       int one_end = -1;
+       predfs(1, 0, one_end, max_dist, 0);
+       int d = 0;
+       int last_end = -1;
+       predfs(one_end, 0, last_end, d, 0);
+       return {{one_end, last_end}, d};
+    }
+    void dfs(int node, int par, int d) {
+        dist[node] = max(dist[node], d);
+        for(int u: adj[node]) {
+          if(u != par) {
+            dfs(u, node, d + 1);
+          }
+        }
+    }
+    void farthest_node(int node1, int node2) {
+        dfs(node1, 0, 0);
+        dfs(node2, 0, 0);
+    }
+};
