@@ -1,0 +1,28 @@
+struct fenwick{
+  vector<int> bit;
+  int n;
+  fenwick(int _n) {
+    n = _n;
+    bit.resize(n);
+  }
+
+  void update(int val, int pos) {
+    while(pos < n) {
+      bit[pos] += val;
+      pos |= (pos + 1);
+    }
+  }
+   
+  int get(int pos) {
+    int res = 0;
+    while(pos >= 0) {
+      res += bit[pos];
+      pos = (pos & (pos + 1)) - 1;
+    }
+    return res;
+  }
+
+  int range(int l, int r) {
+     return get(r) - get(l - 1);
+  }
+};
