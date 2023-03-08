@@ -1,0 +1,60 @@
+struct segTreeMaxSum{
+
+   struct data {
+      int sum, pref, suff, ans;
+   };
+
+   int n;
+   vector<data> t;
+   int base = 0;
+   segTreeMaxSum(int _n) {
+      n = _n;
+      t.resize(4 * n);
+      for(int i = 0; i < t.size(); i++) {
+         t[i] = {base, base, base, base};
+      }
+   }
+
+   data combine(data l, data r) {
+      data res;
+      res.sum = l.sum + r.sum;
+      res.pref = max(l.pref, l.sum + r.pref);
+      res.suff = max(r.suff, r.sum + l.suff);
+      res.ans = max(max(l.ans, r.ans), l.suff + r.pref);
+      return res;
+   }
+
+   data make_data(int val) {
+      data res;
+      res.sum = val;
+      res.pref = res.suff = res.ans = max(0LL, val);
+      return res;
+   }
+   
+   void update(int i, int l, int r, int pos, int val) {
+        if(l > pos || r < pos) return;
+        if(l == pos && r == pos) {
+            t[i].pref = t[i].suff = t[i].ans = t[i].sum = val;
+            return;
+        }
+        int mid = (l + r) >> 1;
+        update(2 * i, l, mid, pos, val);
+        update(2 * i + 1, mid + 1, r, pos, val);
+        t[i] = combine(t[2 * i], t[2 * i + 1]);
+    }
+ 
+    data query(int i, int l, int r, int tl, int tr) {
+        if(l > tr || r < tl) return {base, base, base, base};
+        if(l >= tl && r <= tr) return t[i];
+        int mid = (l + r) >> 1;
+        return combine(query(2 * i, l, mid, tl, tr), query(2 * i + 1, mid + 1, r, tl, tr));
+    }
+ 
+    void update(int pos, int val) {
+        update(1, 0, n - 1, pos, val);
+    }
+ 
+    data query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
+    }
+};
