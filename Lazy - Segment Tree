@@ -1,6 +1,6 @@
 const int N = 2e5 + 9;
 int a[N];
-
+// 1 base indexing
 struct segment_Tree {
   #define lc (n << 1)
   #define rc ((n << 1) | 1)
