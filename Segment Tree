@@ -13,19 +13,19 @@ struct segmentTree{
 
   void build(vector<int> &a) {
     for(int i = 0; i < a.size(); i++) {
-        update(1, a[i]);
+        update(i, a[i]);
     }
   }
   
   void update(int pos, int val) {
-    for(t[pos += n] = val, pos, pos >>= 1) {
+    for(t[pos += n] = val; pos; pos >>= 1) {
         t[pos >> 1] = op(t[pos], t[pos ^ 1]); 
     }
   }
 
   int query(int l, int r) {
     int ans = 0;
-    for(l += n, r += n + 1, l < r, l >>= 1, r >>= 1) {
+    for(l += n, r += n + 1; l < r ;l >>= 1, r >>= 1) {
        if(l & 1) {
         ans = op(ans, t[l++]);
        }
