@@ -1,0 +1,29 @@
+struct dsu{
+  vector<int> par, sz;
+  int n;
+  dsu(int _n) {
+    n = _n;
+    par.resize(n);
+    sz.resize(n, 1);
+    iota(par.begin(), par.end(), 0);
+  }    
+  
+  int get(int u) {
+    int x = u;
+    while(par[x] != x) {
+      par[x] = par[par[x]];
+      x = par[x];
+    }
+    return x;
+  }
+  
+  void merge(int u, int v) {
+    if(get(u) == get(v)) return;
+    int p1 = get(u);
+    int p2 = get(v);
+    if(sz[p1] > sz[p2]) swap(p1, p2);
+    sz[p2] += sz[p1];
+    sz[p1] = 0;
+    par[p1] = par[p2];
+  }
+};
