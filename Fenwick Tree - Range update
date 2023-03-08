@@ -1,0 +1,43 @@
+struct BIT{
+    int n; vector<int> bit;
+    BIT(int n) : n(n), bit(n + 1,0ll) {}
+ 
+    void modify(int i,int x){
+        for(++i;i <= n;i += (i & (-i))) bit[i] += x;
+    }
+ 
+    int query(int i){
+        int res = 0;
+        for(++i;i > 0;i -= (i & (-i))) res += bit[i];
+        return res;
+    }
+};
+ 
+struct BITS{
+    int n; BIT B,BB;
+    BITS(int n) : n(n), B(n), BB(n) {}
+    BITS(vector<int> &a,int n) : BITS(n) { for(int i = 0;i < n;i++) add(i,i,a[i]); }
+ 
+    void add(int l,int r,int x){
+        B.modify(l,x);
+        BB.modify(l,-1ll * l *x);
+        B.modify(r + 1,-x);
+        BB.modify(r + 1,-1ll * (r + 1) * -x);
+    }
+    
+    void add(int i,int x){
+        add(i,i,x);
+    }
+    
+    int sum(int l,int r){
+        if(l > r) return 0ll;
+        int res = 0ll;
+        res += ((B.query(r) * (r + 1)) + BB.query(r));
+        res -= ((B.query(l - 1) * l) + BB.query(l - 1));
+        return res;
+    }
+    
+    int sum(int i){
+        return sum(i,i);
+    }
+};
