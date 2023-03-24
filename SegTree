@@ -1,0 +1,38 @@
+struct segmentTree {
+    int n;
+    vector<int> t;
+    segmentTree(int _n) {
+      n = _n;
+      t.resize(4 * _n);
+    }; 
+    int merge(int a, int b) {
+        return a + b;
+    }
+    void update(int v, int start, int end, int idx, int val) {
+        if(idx < start || idx > end) {
+            return;
+        }
+        if(start == end) {
+            t[v] = val;
+            return;
+        }
+        int mid = (start + end) / 2;
+        update(v * 2, start, mid, idx,val);
+        update(v * 2 + 1, mid + 1, end, idx, val);
+        t[v] = merge(t[2 * v], t[2 * v + 1]);
+    }
+    void update(int idx, int val) {
+        update(1, 0, n - 1, idx, int val);
+    }
+    int query(int v, int start, int end, int l, int r) {
+        if(r < start || l > end) return 0; // change it
+        if (l <= start && r >= end) {
+            return tree[v];
+        }
+        int mid = (start + end) / 2;
+        return merge(query(v * 2, start, mid, l, r), query(v * 2 + 1, mid + 1, end, l, r));
+    }
+    int query(int l,int r){
+        return query(1, 0, n - 1, l, r);
+    }
+};
